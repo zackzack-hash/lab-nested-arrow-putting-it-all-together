@@ -1,7 +1,4 @@
-const {
-    createLoginTracker
-  } = require('../index');
-  
+const createLoginTracker = require('../index.js').createLoginTracker;
   describe('createLoginTracker function', () => {
     const mockUser = {
       "username": "user1",
@@ -43,4 +40,3 @@ const {
       expect(user3Login("password45!")).toBe('Login successful');
     });
   });
-  
