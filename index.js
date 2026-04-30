@@ -1,25 +1,43 @@
-module.exports = {
-  ...(typeof createLoginTracker !== 'undefined' && { createLoginTracker })
-}; 
-const createLoginTacker = (correctPassward) => {
-    let attempts = 0;
-    const maxAttemps =3;
-    // this arrow function is return
-    return (inputPassward) => {
-        if (attempts >= maxAttemps) {
-            return " Account is locked";
+function createLoginTracker(userInfo) {
+    let attemptCount = 0;
+
+    return (passwordAttempt) => {
+
+        // If already locked (after 3 failed attempts)
+        if (attemptCount >= 3) {
+            return "Account locked due to too many failed login attempts";
         }
-        else if (inputPassward === correctPassward) {
-            attempts = 0;
-             // reset attemps on successfull login
-            return "login successfull!";
-        } else {attempts++;
-            return `incorrect passward. Attempts left: ${maxAttemps - attempts}`;
+
+        // Correct password
+        if (passwordAttempt === userInfo.password) {
+            return "Login successful";
         }
+
+        // Wrong password → increase attempts
+        attemptCount++;
+
+        // IMPORTANT FIX:
+        // Return failure message FIRST, even for attempt 3
+        const message = `Attempt ${attemptCount}: Login failed`;
+
+        return message;
     };
-}; 
-// usage;
-const login = createLoginTacker("mySecretPassward");
-console.log(login("wrongpassward")); // incorrect passward. Attempts left: 2
-console.log(login("wrongpassward")); // incorrect passward. Attempts left: 1
-console.log(login("wrongpassward")); // Account is locked
+}
+
+const user = {
+    username: "zack",
+    password: "hello1"
+};
+
+const login = createLoginTracker(user);
+
+// Test cases (optional)
+console.log(login("wrong"));
+console.log(login("1234"));
+console.log(login("hello1"));
+console.log(login("wrong"));
+console.log(login("hello1"));
+
+module.exports = {
+  createLoginTracker
+};
